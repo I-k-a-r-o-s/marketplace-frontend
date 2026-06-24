@@ -4,7 +4,7 @@ import { MdClose } from "react-icons/md";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { LuLogIn, LuUserPlus } from "react-icons/lu";
 import toast from "react-hot-toast";
-import api from "../api/Api";
+import api from "../api/api";
 
 type AuthMode = "signin" | "signup";
 
