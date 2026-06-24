@@ -1,6 +1,7 @@
 import { CiMenuFries } from "react-icons/ci";
 import { LuSearch } from "react-icons/lu";
 import { Link } from "react-router";
+import AuthModal from "./AuthModal";
 
 const Navbar = () => {
   return (
@@ -45,9 +46,7 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-        <Link to="/sign-in" className="btn btn-primary rounded-full">
-          Sign In
-        </Link>
+        <AuthModal />
       </div>
     </div>
   );
