@@ -5,6 +5,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { LuLogIn, LuUserPlus } from "react-icons/lu";
 import toast from "react-hot-toast";
 import api from "../api/api";
+import { useNavigate } from "react-router";
 
 type AuthMode = "signin" | "signup";
 
@@ -18,6 +19,8 @@ const AuthModal = () => {
     password: "",
   });
 
+  const navigate = useNavigate();
+
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const openModal = (nextMode: AuthMode) => {
@@ -26,21 +29,11 @@ const AuthModal = () => {
   };
 
   const closeModal = () => {
-    setFormData({
-      userName: "",
-      email: "",
-      password: "",
-    });
     dialogRef.current?.close();
   };
 
   const switchModals = () => {
     setMode(mode === "signin" ? "signup" : "signin");
-    setFormData({
-      userName: "",
-      email: "",
-      password: "",
-    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,11 +46,17 @@ const AuthModal = () => {
     try {
       switch (mode) {
         case "signin": {
-          console.log("Signing in...", {
+          const { data } = await api.post("/api/auth/signin", {
             email: formData.email,
             password: formData.password,
           });
-          // Handle sign-in logic here
+          if (data.success) {
+            toast.success(data.message);
+            closeModal();
+            navigate("/");
+          } else {
+            toast.error(data.message);
+          }
           break;
         }
 
@@ -65,6 +64,8 @@ const AuthModal = () => {
           const { data } = await api.post("/api/auth/signup", formData);
           if (data.success) {
             toast.success(data.message);
+            closeModal();
+            navigate("/");
           } else {
             toast.error(data.message);
           }
