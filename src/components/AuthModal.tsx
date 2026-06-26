@@ -26,7 +26,25 @@ const AuthModal = () => {
   };
 
   const closeModal = () => {
+    setFormData({
+      userName: "",
+      email: "",
+      password: "",
+    });
     dialogRef.current?.close();
+  };
+
+  const switchModals = () => {
+    setMode(mode === "signin" ? "signup" : "signin");
+    setFormData({
+      userName: "",
+      email: "",
+      password: "",
+    });
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleAuth = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -35,7 +53,10 @@ const AuthModal = () => {
     try {
       switch (mode) {
         case "signin": {
-          console.log("Signing in...", formData);
+          console.log("Signing in...", {
+            email: formData.email,
+            password: formData.password,
+          });
           // Handle sign-in logic here
           break;
         }
@@ -44,10 +65,11 @@ const AuthModal = () => {
           const { data } = await api.post("/api/auth/signup", formData);
           if (data.success) {
             toast.success(data.message);
+          } else {
+            toast.error(data.message);
           }
           break;
         }
-
         default:
           break;
       }
@@ -58,7 +80,6 @@ const AuthModal = () => {
       setLoading(false);
     }
   };
-
   return (
     <div>
       <button
@@ -107,10 +128,9 @@ const AuthModal = () => {
                     minLength={3}
                     maxLength={20}
                     title="Username must start with a letter and can contain letters, numbers, and hyphens. Length: 3-20 characters."
+                    name="userName"
                     value={formData.userName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, userName: e.target.value })
-                    }
+                    onChange={handleChange}
                   />
                   <p className="validator-hint hidden">
                     Must be 3 to 20 characters long, starting with a letter and
@@ -129,9 +149,8 @@ const AuthModal = () => {
                   placeholder="Email"
                   required
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  name="email"
+                  onChange={handleChange}
                 />
                 <p className="validator-hint hidden">
                   Enter valid email address
@@ -153,12 +172,8 @@ const AuthModal = () => {
                     title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                     required
                     value={formData.password}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        password: e.target.value,
-                      })
-                    }
+                    name="password"
+                    onChange={handleChange}
                   />
 
                   <button
@@ -188,7 +203,9 @@ const AuthModal = () => {
                 type="submit"
                 disabled={loading}
               >
-                {mode === "signin" ? (
+                {loading ? (
+                  <span className="loading loading-dots loading-md"></span>
+                ) : mode === "signin" ? (
                   <>
                     Sign In <LuLogIn size={20} />
                   </>
@@ -207,9 +224,7 @@ const AuthModal = () => {
                   type="button"
                   className="ml-1 text-primary underline cursor-pointer disabled:cursor-default"
                   disabled={loading}
-                  onClick={() =>
-                    setMode(mode === "signin" ? "signup" : "signin")
-                  }
+                  onClick={switchModals}
                 >
                   {mode === "signin" ? "Sign Up" : "Sign In"}
                 </button>
