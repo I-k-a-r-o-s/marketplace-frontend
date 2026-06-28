@@ -6,6 +6,12 @@ import { LuLogIn, LuUserPlus } from "react-icons/lu";
 import toast from "react-hot-toast";
 import api from "../api/api";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  authFailed,
+} from "../redux/user/userSlice";
 
 type AuthMode = "signin" | "signup";
 
@@ -19,6 +25,7 @@ const AuthModal = () => {
     password: "",
   });
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -43,6 +50,7 @@ const AuthModal = () => {
   const handleAuth = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    dispatch(signInStart());
     try {
       switch (mode) {
         case "signin": {
@@ -51,6 +59,7 @@ const AuthModal = () => {
             password: formData.password,
           });
           if (data.success) {
+            dispatch(signInSuccess(data.userData));
             toast.success(data.message);
             closeModal();
             navigate("/");
@@ -63,6 +72,7 @@ const AuthModal = () => {
         case "signup": {
           const { data } = await api.post("/api/auth/signup", formData);
           if (data.success) {
+            dispatch(signInSuccess(data.userData));
             toast.success(data.message);
             closeModal();
             navigate("/");
@@ -75,6 +85,7 @@ const AuthModal = () => {
           break;
       }
     } catch (error: any) {
+      dispatch(authFailed());
       console.error("Error in handleAuth:", error);
       toast.error(error.response?.data?.message || "Internal Server Error!");
     } finally {
