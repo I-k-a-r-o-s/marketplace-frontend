@@ -9,12 +9,12 @@ export type User = {
 
 export interface UserState {
   currentUser: User | null;
-  loading: boolean;
+  authLoading: boolean;
 }
 
 const initialState: UserState = {
   currentUser: null,
-  loading: true,
+  authLoading: true,
 };
 
 const userSlice = createSlice({
@@ -22,17 +22,17 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     signInStart: (state) => {
-      state.loading = true;
+      state.authLoading = true;
     },
 
     signInSuccess: (state, action: PayloadAction<User>) => {
-      state.loading = false;
+      state.authLoading = false;
       state.currentUser = action.payload;
     },
 
     signOut: (state) => {
       state.currentUser = null;
-      state.loading = false;
+      state.authLoading = false;
     },
   },
 });
