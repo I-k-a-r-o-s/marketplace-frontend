@@ -2,8 +2,13 @@ import { CiMenuFries } from "react-icons/ci";
 import { LuSearch } from "react-icons/lu";
 import { Link } from "react-router";
 import AuthModal from "./AuthModal";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import { RxAvatar } from "react-icons/rx";
 
 const Navbar = () => {
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="navbar-start">
@@ -16,10 +21,14 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <a>Item 1</a>
+              <Link to="/" className="link link-hover">
+                Home
+              </Link>
             </li>
             <li>
-              <a>Parent</a>
+              <Link to="/about" className="link link-hover">
+                About
+              </Link>
             </li>
           </ul>
         </div>
@@ -29,7 +38,7 @@ const Navbar = () => {
         <form>
           <label className="input w-auto">
             <input type="search" required placeholder="Search" />
-            <LuSearch size={20} className="cursor-pointer"/>
+            <LuSearch size={20} className="cursor-pointer" />
           </label>
         </form>
       </div>
@@ -46,7 +55,30 @@ const Navbar = () => {
             </Link>
           </li>
         </ul>
-        <AuthModal />
+        {currentUser ? (
+          <div className="dropdown dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-ghost btn-circle avatar"
+            >
+              <RxAvatar size={30} className="text-primary" />
+            </div>
+            <ul
+              tabIndex={-1}
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            >
+              <li>
+                <Link to={"/profile"}>Profile</Link>
+              </li>
+              <li>
+                <a>Logout</a>
+              </li>
+            </ul>
+          </div>
+        ) : (
+          <AuthModal />
+        )}
       </div>
     </div>
   );
