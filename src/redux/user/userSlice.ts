@@ -14,7 +14,7 @@ export interface UserState {
 
 const initialState: UserState = {
   currentUser: null,
-  loading: false,
+  loading: true,
 };
 
 const userSlice = createSlice({
@@ -34,15 +34,10 @@ const userSlice = createSlice({
       state.currentUser = null;
       state.loading = false;
     },
-
-    authFailed: (state) => {
-      state.loading = false;
-    },
   },
 });
 
-export const { signInStart, signInSuccess, signOut, authFailed } =
-  userSlice.actions;
+export const { signInStart, signInSuccess, signOut } = userSlice.actions;
 
 const userReducer = userSlice.reducer;
 export default userReducer;

@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import {
   signInStart,
   signInSuccess,
-  authFailed,
+  signOut,
 } from "../redux/user/userSlice";
 
 type AuthMode = "signin" | "signup";
@@ -85,7 +85,7 @@ const AuthModal = () => {
           break;
       }
     } catch (error: any) {
-      dispatch(authFailed());
+      dispatch(signOut());
       console.error("Error in handleAuth:", error);
       toast.error(error.response?.data?.message || "Internal Server Error!");
     } finally {
