@@ -7,8 +7,9 @@ import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import api from "./api/api";
 import { useDispatch, useSelector } from "react-redux";
-import { signInSuccess, signOut } from "./redux/user/userSlice";
+import { signInStart, signInSuccess, signOut } from "./redux/user/userSlice";
 import type { RootState } from "./redux/store";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ const App = () => {
 
     const validate = async () => {
       try {
+        dispatch(signInStart());
+
         const { data } = await api.get("/api/auth/validate");
         if (data.success && data.userData) {
           dispatch(signInSuccess(data.userData));
@@ -40,7 +43,10 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/profile" element={<Profile />} />
+
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
       </Routes>
     </>
   );
