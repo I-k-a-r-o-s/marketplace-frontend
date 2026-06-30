@@ -7,11 +7,7 @@ import toast from "react-hot-toast";
 import api from "../api/api";
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
-import {
-  signInStart,
-  signInSuccess,
-  signOut,
-} from "../redux/user/userSlice";
+import { signInStart, signInSuccess, signOut } from "../redux/user/userSlice";
 
 type AuthMode = "signin" | "signup";
 
