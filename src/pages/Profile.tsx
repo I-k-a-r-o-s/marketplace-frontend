@@ -1,31 +1,56 @@
 import { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { IoWarningOutline } from "react-icons/io5";
+import api from "../api/api";
+import toast from "react-hot-toast";
+import {
+  updateUserFailed,
+  updateUserStart,
+  updateUserSuccess,
+} from "../redux/user/userSlice";
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
     password: "",
   });
 
-  const { currentUser } = useSelector((state: RootState) => state.user);
+  const { currentUser, isUpdating } = useSelector(
+    (state: RootState) => state.user,
+  );
+
+  const dispatch = useDispatch();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const updateInfo = async () => {
+  const updateInfo = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      setLoading(true);
-    } catch (error) {
+      dispatch(updateUserStart());
+      const { data } = await api.patch(
+        `/api/user/${currentUser?._id}`,
+        formData,
+      );
+      if (data.success) {
+        toast.success(data.message);
+        dispatch(updateUserSuccess(data.userData));
+      } else {
+        toast.error(data.message);
+        dispatch(updateUserFailed());
+      }
+    } catch (error: any) {
       console.log("Error in updateInfo!:", error);
-    } finally {
-      setLoading(false);
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred while updating user info.",
+      );
+      dispatch(updateUserFailed());
     }
   };
   return (
@@ -33,7 +58,7 @@ const Profile = () => {
       <div className="hero-content text-center">
         <div className="max-w-lg">
           <h1 className="text-5xl font-bold mt-20">Profile</h1>
-          <form className="mt-6 w-full">
+          <form className="mt-6 w-full" onSubmit={updateInfo}>
             <fieldset className="space-y-4">
               <div className="space-y-1 text-left">
                 <label className="label px-0 pb-1 pt-0">
@@ -42,13 +67,13 @@ const Profile = () => {
                 <input
                   type="text"
                   className="input input-bordered w-full rounded-2xl validator"
-                  placeholder={currentUser?.userName}
+                  placeholder="User Name"
                   pattern="[A-Za-z][A-Za-z0-9\-]*"
                   minLength={3}
                   maxLength={20}
                   title="Username must start with a letter and can contain letters, numbers, and hyphens. Length: 3-20 characters."
                   name="userName"
-                  value={formData.userName}
+                  defaultValue={currentUser?.userName}
                   onChange={handleChange}
                 />
                 <p className="validator-hint hidden">
@@ -65,9 +90,9 @@ const Profile = () => {
                 <input
                   type="email"
                   className="input input-bordered w-full rounded-2xl validator"
-                  placeholder={currentUser?.email}
+                  placeholder="Email"
                   name="email"
-                  value={formData.email}
+                  defaultValue={currentUser?.email}
                   onChange={handleChange}
                 />
                 <p className="validator-hint hidden">
@@ -95,7 +120,7 @@ const Profile = () => {
 
                   <button
                     type="button"
-                    disabled={loading}
+                    disabled={isUpdating}
                     title={showPassword ? "Hide password" : "Show password"}
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-3 top-1/2 z-10 -translate-y-1/2 text-base-content/60 hover:text-base-content"
@@ -118,10 +143,9 @@ const Profile = () => {
               <button
                 className="btn btn-primary w-full rounded-2xl mt-10"
                 type="submit"
-                disabled={loading}
-                onClick={updateInfo}
+                disabled={isUpdating}
               >
-                {loading ? (
+                {isUpdating ? (
                   <span className="loading loading-spinner loading-xl"></span>
                 ) : (
                   "Update"
