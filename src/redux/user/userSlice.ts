@@ -10,11 +10,13 @@ export type User = {
 export interface UserState {
   currentUser: User | null;
   authLoading: boolean;
+  isUpdating: boolean;
 }
 
 const initialState: UserState = {
   currentUser: null,
   authLoading: true,
+  isUpdating: false,
 };
 
 const userSlice = createSlice({
@@ -34,10 +36,28 @@ const userSlice = createSlice({
       state.currentUser = null;
       state.authLoading = false;
     },
+
+    updateUserStart: (state) => {
+      state.isUpdating = true;
+    },
+    updateUserSuccess: (state, action: PayloadAction<User>) => {
+      state.isUpdating = false;
+      state.currentUser = action.payload;
+    },
+    updateUserFailed: (state) => {
+      state.isUpdating = false;
+    },
   },
 });
 
-export const { signInStart, signInSuccess, signOut } = userSlice.actions;
+export const {
+  signInStart,
+  signInSuccess,
+  signOut,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailed,
+} = userSlice.actions;
 
 const userReducer = userSlice.reducer;
 export default userReducer;
