@@ -6,23 +6,28 @@ import { LuLogIn, LuUserPlus } from "react-icons/lu";
 import toast from "react-hot-toast";
 import api from "../api/api";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
-import { signInStart, signInSuccess, signOut } from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "../redux/user/userSlice";
 
 type AuthMode = "signin" | "signup";
 
 const AuthModal = () => {
   const [mode, setMode] = useState<AuthMode>("signin");
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
     email: "",
     password: "",
   });
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const { authLoading } = useSelector((state: RootState) => state.user);
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -45,7 +50,6 @@ const AuthModal = () => {
 
   const handleAuth = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
     dispatch(signInStart());
     try {
       switch (mode) {
@@ -61,6 +65,7 @@ const AuthModal = () => {
             navigate("/");
           } else {
             toast.error(data.message);
+            dispatch(signInFailure());
           }
           break;
         }
@@ -74,6 +79,7 @@ const AuthModal = () => {
             navigate("/");
           } else {
             toast.error(data.message);
+            dispatch(signInFailure());
           }
           break;
         }
@@ -81,11 +87,9 @@ const AuthModal = () => {
           break;
       }
     } catch (error: any) {
-      dispatch(signOut());
       console.error("Error in handleAuth:", error);
       toast.error(error.response?.data?.message || "Internal Server Error!");
-    } finally {
-      setLoading(false);
+      dispatch(signInFailure());
     }
   };
   return (
@@ -187,7 +191,7 @@ const AuthModal = () => {
                   <button
                     type="button"
                     title={showPassword ? "Hide password" : "Show password"}
-                    disabled={loading}
+                    disabled={authLoading}
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-3 top-1/2 z-10 -translate-y-1/2 text-base-content/60 hover:text-base-content"
                   >
@@ -209,9 +213,9 @@ const AuthModal = () => {
               <button
                 className="btn btn-primary w-full rounded-2xl"
                 type="submit"
-                disabled={loading}
+                disabled={authLoading}
               >
-                {loading ? (
+                {authLoading ? (
                   <span className="loading loading-dots loading-md"></span>
                 ) : mode === "signin" ? (
                   <>
@@ -231,7 +235,7 @@ const AuthModal = () => {
                 <button
                   type="button"
                   className="ml-1 text-primary underline cursor-pointer disabled:cursor-default"
-                  disabled={loading}
+                  disabled={authLoading}
                   onClick={switchModals}
                 >
                   {mode === "signin" ? "Sign Up" : "Sign In"}
