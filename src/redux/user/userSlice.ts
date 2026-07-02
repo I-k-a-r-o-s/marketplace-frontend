@@ -10,12 +10,14 @@ export type User = {
 export interface UserState {
   currentUser: User | null;
   authLoading: boolean;
+  authChecked: boolean;
   isUpdating: boolean;
 }
 
 const initialState: UserState = {
   currentUser: null,
-  authLoading: true,
+  authLoading: false,
+  authChecked: false,
   isUpdating: false,
 };
 
@@ -32,8 +34,25 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
     },
 
-    signOut: (state) => {
+    signInFailure: (state) => {
+      state.authLoading = false;
+    },
+
+    authCheckComplete: (state) => {
+      state.authChecked = true;
+      state.authLoading = false;
+    },
+
+    signOutStart: (state) => {
+      state.authLoading = true;
+    },
+
+    signOutSuccess: (state) => {
       state.currentUser = null;
+      state.authLoading = false;
+    },
+
+    signOutFailure: (state) => {
       state.authLoading = false;
     },
 
@@ -55,7 +74,8 @@ const userSlice = createSlice({
     },
 
     deleteUserSuccess: (state) => {
-      ((state.currentUser = null), (state.authLoading = false));
+      state.currentUser = null;
+      state.authLoading = false;
       state.isUpdating = false;
     },
 
@@ -68,7 +88,11 @@ const userSlice = createSlice({
 export const {
   signInStart,
   signInSuccess,
-  signOut,
+  signInFailure,
+  authCheckComplete,
+  signOutStart,
+  signOutSuccess,
+  signOutFailure,
   updateUserStart,
   updateUserSuccess,
   updateUserFailed,
