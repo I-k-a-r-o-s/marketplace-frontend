@@ -2,13 +2,41 @@ import { CiMenuFries } from "react-icons/ci";
 import { LuSearch } from "react-icons/lu";
 import { Link } from "react-router";
 import AuthModal from "./AuthModal";
-import { useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../redux/store";
 import { RxAvatar } from "react-icons/rx";
+import toast from "react-hot-toast";
+import api from "../api/api";
+import {
+  signOutFailure,
+  signOutStart,
+  signOutSuccess,
+} from "../redux/user/userSlice";
 
 const Navbar = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { currentUser } = useSelector((state: RootState) => state.user);
 
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutStart());
+      const { data } = await api.post("api/auth/signout");
+      if (data.success) {
+        dispatch(signOutSuccess());
+        toast.success(data.message);
+      } else {
+        dispatch(signOutFailure());
+        toast.error(data.message);
+      }
+    } catch (error: any) {
+      console.log("Error in updateInfo!:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred while signing out!",
+      );
+      dispatch(signOutFailure());
+    }
+  };
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="navbar-start">
@@ -72,7 +100,9 @@ const Navbar = () => {
                 <Link to={"/profile"}>Profile</Link>
               </li>
               <li>
-                <a>Logout</a>
+                <button type="button" onClick={handleSignOut}>
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
