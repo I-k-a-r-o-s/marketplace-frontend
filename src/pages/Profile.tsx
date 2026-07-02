@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../redux/store";
+import type { AppDispatch, RootState } from "../redux/store";
 import { IoWarningOutline } from "react-icons/io5";
 import api from "../api/api";
 import toast from "react-hot-toast";
@@ -27,7 +27,7 @@ const Profile = () => {
     (state: RootState) => state.user,
   );
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
