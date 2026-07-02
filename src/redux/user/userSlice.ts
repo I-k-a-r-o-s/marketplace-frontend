@@ -40,11 +40,26 @@ const userSlice = createSlice({
     updateUserStart: (state) => {
       state.isUpdating = true;
     },
+
     updateUserSuccess: (state, action: PayloadAction<User>) => {
       state.isUpdating = false;
       state.currentUser = action.payload;
     },
+
     updateUserFailed: (state) => {
+      state.isUpdating = false;
+    },
+
+    deleteUserStart: (state) => {
+      state.isUpdating = true;
+    },
+
+    deleteUserSuccess: (state) => {
+      ((state.currentUser = null), (state.authLoading = false));
+      state.isUpdating = false;
+    },
+
+    deleteUserFailed: (state) => {
       state.isUpdating = false;
     },
   },
@@ -57,6 +72,9 @@ export const {
   updateUserStart,
   updateUserSuccess,
   updateUserFailed,
+  deleteUserFailed,
+  deleteUserStart,
+  deleteUserSuccess,
 } = userSlice.actions;
 
 const userReducer = userSlice.reducer;
