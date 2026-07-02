@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
@@ -6,10 +6,14 @@ import { IoWarningOutline } from "react-icons/io5";
 import api from "../api/api";
 import toast from "react-hot-toast";
 import {
+  deleteUserFailed,
+  deleteUserStart,
+  deleteUserSuccess,
   updateUserFailed,
   updateUserStart,
   updateUserSuccess,
 } from "../redux/user/userSlice";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 const Profile = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -48,9 +52,36 @@ const Profile = () => {
       console.log("Error in updateInfo!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while updating user info.",
+          "An error occurred while updating user info!",
       );
       dispatch(updateUserFailed());
+    }
+  };
+
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const handleDelete = async () => {
+    try {
+      dispatch(deleteUserStart());
+
+      const { data } = await api.delete("/api/user");
+      if (data.success) {
+        dispatch(deleteUserSuccess());
+        toast.success(data.message);
+      } else {
+        dispatch(deleteUserFailed());
+        toast.error(data.message);
+      }
+    } catch (error: any) {
+      console.log("Error in handleDelete!:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred while deleting user!.",
+      );
+      dispatch(deleteUserFailed());
+    }
+    finally{
+      dialogRef.current?.close()
     }
   };
   return (
@@ -153,10 +184,34 @@ const Profile = () => {
               </button>
             </fieldset>
           </form>
-          <button className="btn btn-warning mt-8">
-            <IoWarningOutline size={20} />
+
+          <button
+            className="btn btn-warning mt-8"
+            onClick={() => dialogRef.current?.showModal()}
+          >
             Delete Account
           </button>
+          <dialog
+            ref={dialogRef}
+            className="modal modal-bottom sm:modal-middle"
+          >
+            <div className="modal-box">
+              <h3 className="font-bold text-lg">Are You Sure?</h3>
+              <p className="py-4">THIS ACTION CANNOT BE UNDONE!</p>
+              <button className="btn btn-warning mt-8" onClick={handleDelete}>
+                <IoWarningOutline size={20} />
+                CONFIRM DELETE!
+              </button>
+              <div className="modal-action">
+                <form method="dialog">
+                  <button className="btn btn-md btn-error btn-circle btn-ghost absolute right-2 top-2">
+                    <IoIosCloseCircleOutline size={20} />
+                  </button>
+                </form>
+              </div>
+            </div>
+          </dialog>
+          
         </div>
       </div>
     </div>
