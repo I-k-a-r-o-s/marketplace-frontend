@@ -6,19 +6,20 @@ import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
 import { useEffect } from "react";
 import api from "./api/api";
-import { useDispatch, useSelector } from "react-redux";
-import { signInStart, signInSuccess, signOut } from "./redux/user/userSlice";
-import type { RootState } from "./redux/store";
+import { useDispatch } from "react-redux";
+import {
+  authCheckComplete,
+  signInStart,
+  signInSuccess,
+  signOutSuccess,
+} from "./redux/user/userSlice";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import type { AppDispatch } from "./redux/store";
 
 const App = () => {
-  const dispatch = useDispatch();
-
-  const { currentUser } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if (currentUser) return;
-
     const validate = async () => {
       try {
         dispatch(signInStart());
@@ -27,15 +28,18 @@ const App = () => {
         if (data.success && data.userData) {
           dispatch(signInSuccess(data.userData));
         } else {
-          dispatch(signOut());
+          dispatch(signOutSuccess());
         }
       } catch (error) {
-        dispatch(signOut());
+        dispatch(signOutSuccess());
         console.log("Error in validate!:", error);
+      }
+      finally{
+        dispatch(authCheckComplete())
       }
     };
     validate();
-  }, [dispatch, currentUser]);
+  }, [dispatch]);
   return (
     <>
       <Toaster position="bottom-center" reverseOrder={false} />
