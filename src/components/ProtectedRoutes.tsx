@@ -3,11 +3,11 @@ import type { RootState } from "../redux/store";
 import { Navigate, Outlet } from "react-router";
 
 const ProtectedRoutes = () => {
-  const { currentUser, authLoading } = useSelector(
+  const { currentUser, authChecked } = useSelector(
     (state: RootState) => state.user,
   );
 
-  if (authLoading) {
+  if (!authChecked) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <span className="loading loading-ring loading-xl"></span>
