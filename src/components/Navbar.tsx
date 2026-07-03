@@ -12,6 +12,7 @@ import {
   signOutStart,
   signOutSuccess,
 } from "../redux/user/userSlice";
+import { IoMdAdd } from "react-icons/io";
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -49,18 +50,20 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li>
-              <Link to="/" className="link link-hover">
+              <Link to={"/"} className="link link-hover">
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/about" className="link link-hover">
+              <Link to={"/about"} className="link link-hover">
                 About
               </Link>
             </li>
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">Estates</a>
+        <Link to={"/"} className="btn btn-ghost text-xl">
+          Estates
+        </Link>
       </div>
       <div className="navbar-center">
         <form>
@@ -73,39 +76,49 @@ const Navbar = () => {
       <div className="navbar-end gap-4">
         <ul className="menu menu-horizontal hidden lg:flex px-1 gap-2">
           <li>
-            <Link to="/" className="link link-hover">
+            <Link to={"/"} className="link link-hover">
               Home
             </Link>
           </li>
           <li>
-            <Link to="/about" className="link link-hover">
+            <Link to={"/about"} className="link link-hover">
               About
             </Link>
           </li>
         </ul>
+
         {currentUser ? (
-          <div className="dropdown dropdown-end">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost btn-circle avatar"
-            >
-              <RxAvatar size={30} className="text-primary" />
+          <>
+            <Link to={"/create-listing"}>
+              <button className="btn btn-success btn-sm">
+                <IoMdAdd size={20} />{" "}
+                <span className="hidden md:inline">Create Listing</span>
+              </button>
+            </Link>
+
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-circle avatar"
+              >
+                <RxAvatar size={30} className="text-primary" />
+              </div>
+              <ul
+                tabIndex={-1}
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              >
+                <li>
+                  <Link to={"/profile"}>Profile</Link>
+                </li>
+                <li>
+                  <button type="button" onClick={handleSignOut}>
+                    Logout
+                  </button>
+                </li>
+              </ul>
             </div>
-            <ul
-              tabIndex={-1}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-            >
-              <li>
-                <Link to={"/profile"}>Profile</Link>
-              </li>
-              <li>
-                <button type="button" onClick={handleSignOut}>
-                  Logout
-                </button>
-              </li>
-            </ul>
-          </div>
+          </>
         ) : (
           <AuthModal />
         )}
