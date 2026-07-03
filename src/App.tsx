@@ -15,6 +15,7 @@ import {
 } from "./redux/user/userSlice";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import type { AppDispatch } from "./redux/store";
+import CreateListing from "./pages/CreateListing";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,9 +34,8 @@ const App = () => {
       } catch (error) {
         dispatch(signOutSuccess());
         console.log("Error in validate!:", error);
-      }
-      finally{
-        dispatch(authCheckComplete())
+      } finally {
+        dispatch(authCheckComplete());
       }
     };
     validate();
@@ -50,6 +50,7 @@ const App = () => {
 
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
       </Routes>
     </>
