@@ -185,7 +185,7 @@ const CreateListing = () => {
                     type="text"
                     className="input input-bordered w-full"
                     name="name"
-                    minLength={10}
+                    minLength={5}
                     maxLength={60}
                     required
                     placeholder="Property Name"
@@ -316,7 +316,12 @@ const CreateListing = () => {
                   </div>
 
                   <div>
-                    <label className="label">Price ($ / month)</label>
+                    <label className="label">
+                      Price{" "}
+                      {formData.typeOfPlace === "sell"
+                        ? "($)"
+                        : "($ / month)"}{" "}
+                    </label>
                     <input
                       type="number"
                       className="input input-bordered w-full"
@@ -330,7 +335,10 @@ const CreateListing = () => {
 
                   <div>
                     <label className="label">
-                      Discounted Price ($ / month)
+                      Discounted Price{" "}
+                      {formData.typeOfPlace === "sell"
+                        ? "($)"
+                        : "($ / month)"}{" "}
                     </label>
                     <input
                       type="number"
