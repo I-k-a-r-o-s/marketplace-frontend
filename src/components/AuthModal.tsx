@@ -14,10 +14,10 @@ import {
   signInSuccess,
 } from "../redux/user/userSlice";
 
-type AuthMode = "signin" | "signup";
+type AuthModeType = "signin" | "signup";
 
 const AuthModal = () => {
-  const [mode, setMode] = useState<AuthMode>("signin");
+  const [mode, setMode] = useState<AuthModeType>("signin");
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     userName: "",
@@ -31,7 +31,7 @@ const AuthModal = () => {
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const openModal = (nextMode: AuthMode) => {
+  const openModal = (nextMode: AuthModeType) => {
     setMode(nextMode);
     dialogRef.current?.showModal();
   };
