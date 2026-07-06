@@ -111,6 +111,11 @@ const Navbar = () => {
                 <li>
                   <Link to={"/profile"}>Profile</Link>
                 </li>
+
+                <li>
+                  <Link to={"/all-listings"}>Your Listings</Link>
+                </li>
+
                 <li>
                   <button type="button" onClick={handleSignOut}>
                     Logout
