@@ -37,10 +37,7 @@ const Profile = () => {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-      const { data } = await api.patch(
-        `/api/user/${currentUser?._id}`,
-        formData,
-      );
+      const { data } = await api.patch("/api/user", formData);
       if (data.success) {
         toast.success(data.message);
         dispatch(updateUserSuccess(data.userData));
