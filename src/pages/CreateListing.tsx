@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../api/api";
 import toast from "react-hot-toast";
 import { SlPicture } from "react-icons/sl";
+import { useNavigate } from "react-router";
 
 type FormDataType = {
   name: string;
@@ -37,6 +38,7 @@ const CreateListing = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const navigate=useNavigate()
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -96,6 +98,8 @@ const CreateListing = () => {
       const { data } = await api.post("/api/listing", payload);
       if (data.success) {
         toast.success(data.message);
+        console.log(data.listing)
+        navigate(`/listing/${data.listing._id}`)
       } else {
         toast.error(data.message);
       }
