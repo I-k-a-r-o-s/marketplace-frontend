@@ -16,6 +16,7 @@ import {
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import type { AppDispatch } from "./redux/store";
 import CreateListing from "./pages/CreateListing";
+import AllListings from "./pages/AllListings";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -51,6 +52,7 @@ const App = () => {
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
+          <Route path="/all-listings" element={<AllListings />} />
         </Route>
       </Routes>
     </>
