@@ -124,11 +124,16 @@ const AllListings = () => {
 
                   <td className="hidden sm:table-cell">
                     {listing.offer ? (
-                      <span className="badge badge-success badge-sm">
+                      <>
                         Offer
-                      </span>
+                        <br />
+                        <span className="badge badge-success badge-sm">
+                          ${listing.discountedPrice}
+                          {listing.typeOfPlace === "rent" ? "/mo" : ""}
+                        </span>
+                      </>
                     ) : (
-                      <span className="badge badge-ghost badge-sm">No</span>
+                      "No"
                     )}
                   </td>
 
