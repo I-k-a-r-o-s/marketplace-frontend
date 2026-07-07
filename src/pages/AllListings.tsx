@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../api/api";
 import toast from "react-hot-toast";
 import { CiEdit } from "react-icons/ci";
@@ -20,6 +20,7 @@ export type ListingType = {
 
 const AllListings = () => {
   const [listings, setListings] = useState<ListingType[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchUserListings = async () => {
     try {
@@ -31,16 +32,41 @@ const AllListings = () => {
         toast.error(data.message);
       }
     } catch (error: any) {
-      console.log("Error in updateInfo!:", error);
+      console.log("Error in fetchUserListings!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while updating user info!",
+          "An error occurred while fetching listings!",
       );
     }
   };
+
+  const handleDeleteListing = async (id: string) => {
+    try {
+      setLoading(true);
+
+      const { data } = await api.delete(`/api/listing/${id}`);
+      if (data.success) {
+        toast.success(data.message);
+        await fetchUserListings();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error: any) {
+      console.log("Error in handleDeleteListing!:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred while deleting listing!",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUserListings();
   }, []);
+
+  const dialogRef = useRef<HTMLDialogElement>(null);
   return (
     <>
       <title>Your Listings</title>
@@ -116,14 +142,44 @@ const AllListings = () => {
 
                   <td>
                     <div className="flex gap-2">
-                      <button className="btn btn-ghost btn-xs">
+                      <button
+                        className="btn btn-ghost btn-xs btn-info"
+                        disabled={loading}
+                      >
                         Edit
                         <CiEdit size={20} />
                       </button>
-                      <button className="btn btn-ghost btn-xs text-error">
+
+                      <button
+                        className="btn btn-ghost btn-xs btn-error"
+                        disabled={loading}
+                        onClick={() => dialogRef.current?.showModal()}
+                      >
                         Delete
                         <MdOutlineDelete size={20} />
                       </button>
+                      <dialog
+                        ref={dialogRef}
+                        className="modal modal-bottom sm:modal-middle"
+                      >
+                        <div className="modal-box">
+                          <h3 className="font-bold text-lg">Are You Sure?</h3>
+                          <p className="py-4 text-center font-semibold text-xl text-warning">
+                            THIS ACTION IS IRREVERSIBLE!
+                          </p>
+                          <div className="modal-action">
+                            <form method="dialog" className="flex gap-3">
+                              <button
+                                className="btn btn-error"
+                                onClick={() => handleDeleteListing(listing._id)}
+                              >
+                                Delete
+                              </button>
+                              <button className="btn btn-primary">Close</button>
+                            </form>
+                          </div>
+                        </div>
+                      </dialog>
                     </div>
                   </td>
                 </tr>
