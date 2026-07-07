@@ -71,11 +71,16 @@ const CreateListing = () => {
 
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox"
+          ? checked
+          : type === "number"
+          ? Number(value)
+          : value,
     }));
   };
 
-  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmitListing = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       setLoading(true);
@@ -98,13 +103,13 @@ const CreateListing = () => {
       const { data } = await api.post("/api/listing", payload);
       if (data.success) {
         toast.success(data.message);
-        console.log(data.listing)
         navigate(`/listing/${data.listing._id}`)
+        console.log(formData)
       } else {
         toast.error(data.message);
       }
     } catch (error: any) {
-      console.log("Error in handleSubmit:", error);
+      console.log("Error in handleSubmitListing:", error);
       toast.error(error.response?.data?.message || "Internal Server Error!");
     } finally {
       setLoading(false);
@@ -122,7 +127,7 @@ const CreateListing = () => {
 
           {/* Form Card */}
           <div className="card bg-base-100 shadow-xl">
-            <form className="card-body space-y-6" onSubmit={handleSubmit}>
+            <form className="card-body space-y-6" onSubmit={handleSubmitListing}>
               {/* Images */}
               <fieldset className="fieldset" disabled={loading}>
                 <legend className="fieldset-legend">Images</legend>
