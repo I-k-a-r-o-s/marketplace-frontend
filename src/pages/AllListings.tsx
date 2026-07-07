@@ -20,7 +20,12 @@ export type ListingType = {
 
 const AllListings = () => {
   const [listings, setListings] = useState<ListingType[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [selectedListing, setSelectedListing] = useState<ListingType | null>(
+    null,
+  );
+
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   const fetchUserListings = async () => {
     try {
@@ -40,13 +45,17 @@ const AllListings = () => {
     }
   };
 
-  const handleDeleteListing = async (id: string) => {
-    try {
-      setLoading(true);
+  const handleDeleteListing = async () => {
+    if (!selectedListing) return;
 
-      const { data } = await api.delete(`/api/listing/${id}`);
+    try {
+      setDeletingId(selectedListing._id);
+
+      const { data } = await api.delete(`/api/listing/${selectedListing._id}`);
+
       if (data.success) {
         toast.success(data.message);
+        dialogRef.current?.close();
         await fetchUserListings();
       } else {
         toast.error(data.message);
@@ -58,7 +67,8 @@ const AllListings = () => {
           "An error occurred while deleting listing!",
       );
     } finally {
-      setLoading(false);
+      setDeletingId(null);
+      setSelectedListing(null);
     }
   };
 
@@ -66,7 +76,6 @@ const AllListings = () => {
     fetchUserListings();
   }, []);
 
-  const dialogRef = useRef<HTMLDialogElement>(null);
   return (
     <>
       <title>Your Listings</title>
@@ -149,7 +158,7 @@ const AllListings = () => {
                     <div className="flex gap-2">
                       <button
                         className="btn btn-ghost btn-xs btn-info"
-                        disabled={loading}
+                        disabled={deletingId !== null}
                       >
                         Edit
                         <CiEdit size={20} />
@@ -157,34 +166,22 @@ const AllListings = () => {
 
                       <button
                         className="btn btn-ghost btn-xs btn-error"
-                        disabled={loading}
-                        onClick={() => dialogRef.current?.showModal()}
+                        disabled={deletingId !== null}
+                        onClick={() => {
+                          setSelectedListing(listing);
+                          dialogRef.current?.showModal();
+                        }}
                       >
-                        Delete
+                        {deletingId === listing._id ? (
+                          <>
+                            Deleting...
+                            <span className="loading loading-spinner loading-xs"></span>
+                          </>
+                        ) : (
+                          "Delete"
+                        )}
                         <MdOutlineDelete size={20} />
                       </button>
-                      <dialog
-                        ref={dialogRef}
-                        className="modal modal-bottom sm:modal-middle"
-                      >
-                        <div className="modal-box">
-                          <h3 className="font-bold text-lg">Are You Sure?</h3>
-                          <p className="py-4 text-center font-semibold text-xl text-warning">
-                            THIS ACTION IS IRREVERSIBLE!
-                          </p>
-                          <div className="modal-action">
-                            <form method="dialog" className="flex gap-3">
-                              <button
-                                className="btn btn-error"
-                                onClick={() => handleDeleteListing(listing._id)}
-                              >
-                                Delete
-                              </button>
-                              <button className="btn btn-primary">Close</button>
-                            </form>
-                          </div>
-                        </div>
-                      </dialog>
                     </div>
                   </td>
                 </tr>
@@ -215,6 +212,22 @@ const AllListings = () => {
           </div>
         </div>
       )}
+      <dialog ref={dialogRef} className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Are You Sure?</h3>
+          <p className="py-4 text-center font-semibold text-xl text-warning">
+            THIS ACTION IS IRREVERSIBLE!
+          </p>
+          <div className="modal-action">
+            <form method="dialog" className="flex gap-3">
+              <button className="btn btn-error" onClick={handleDeleteListing}>
+                Delete
+              </button>
+              <button className="btn btn-primary">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
     </>
   );
 };
