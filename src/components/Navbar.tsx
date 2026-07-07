@@ -30,7 +30,7 @@ const Navbar = () => {
         toast.error(data.message);
       }
     } catch (error: any) {
-      console.log("Error in updateInfo!:", error);
+      console.log("Error in handleSignOut!:", error);
       toast.error(
         error?.response?.data?.message ||
           "An error occurred while signing out!",

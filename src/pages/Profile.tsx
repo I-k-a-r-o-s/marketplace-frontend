@@ -33,7 +33,7 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const updateInfo = async (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleUpdateInfo = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
@@ -46,7 +46,7 @@ const Profile = () => {
         dispatch(updateUserFailed());
       }
     } catch (error: any) {
-      console.log("Error in updateInfo!:", error);
+      console.log("Error in handleUpdateInfo!:", error);
       toast.error(
         error?.response?.data?.message ||
           "An error occurred while updating user info!",
@@ -57,7 +57,7 @@ const Profile = () => {
 
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const handleDelete = async () => {
+  const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
 
@@ -70,7 +70,7 @@ const Profile = () => {
         toast.error(data.message);
       }
     } catch (error: any) {
-      console.log("Error in handleDelete!:", error);
+      console.log("Error in handleDeleteUser!:", error);
       toast.error(
         error?.response?.data?.message ||
           "An error occurred while deleting user!.",
@@ -87,7 +87,7 @@ const Profile = () => {
         <div className="hero-content text-center">
           <div className="max-w-lg">
             <h1 className="text-5xl font-bold mt-20">Profile</h1>
-            <form className="mt-6 w-full" onSubmit={updateInfo}>
+            <form className="mt-6 w-full" onSubmit={handleUpdateInfo}>
               <fieldset className="space-y-4">
                 <div className="space-y-1 text-left">
                   <label className="label px-0 pb-1 pt-0">
@@ -196,7 +196,10 @@ const Profile = () => {
               <div className="modal-box">
                 <h3 className="font-bold text-lg">Are You Sure?</h3>
                 <p className="py-4">THIS ACTION CANNOT BE UNDONE!</p>
-                <button className="btn btn-warning mt-8" onClick={handleDelete}>
+                <button
+                  className="btn btn-warning mt-8"
+                  onClick={handleDeleteUser}
+                >
                   <IoWarningOutline size={20} />
                   CONFIRM DELETE!
                 </button>
