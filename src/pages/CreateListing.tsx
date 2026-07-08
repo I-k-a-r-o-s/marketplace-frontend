@@ -3,21 +3,7 @@ import api from "../api/api";
 import toast from "react-hot-toast";
 import { SlPicture } from "react-icons/sl";
 import { useNavigate } from "react-router";
-
-type FormDataType = {
-  name: string;
-  description: string;
-  address: string;
-  typeOfPlace: "sell" | "rent";
-  parking: boolean;
-  furnished: boolean;
-  offer: boolean;
-  bedrooms: number;
-  bathrooms: number;
-  price: number;
-  discountedPrice: number;
-  images: File[];
-};
+import type { FormDataType } from "../utils/types";
 
 const CreateListing = () => {
   const [formData, setFormData] = useState<FormDataType>({
