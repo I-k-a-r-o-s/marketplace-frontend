@@ -1,11 +1,5 @@
 export type AuthModeType = "signin" | "signup";
 
-export type UpdateListingModalProps = {
-  listing: ListingType;
-  onUpdated: () => Promise<void>;
-  disabled: boolean;
-};
-
 export type ListingType = {
   _id: string;
   name: string;
@@ -24,6 +18,11 @@ export type ListingType = {
   createdAt: string;
 };
 
+export type UpdateListingModalProps = {
+  listing: ListingType;
+  onUpdated: () => Promise<void>;
+  disabled: boolean;
+};
 
 export type FormDataType = {
   name: string;
