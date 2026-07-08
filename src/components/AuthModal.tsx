@@ -13,8 +13,7 @@ import {
   signInStart,
   signInSuccess,
 } from "../redux/user/userSlice";
-
-type AuthModeType = "signin" | "signup";
+import type { AuthModeType } from "../utils/types";
 
 const AuthModal = () => {
   const [mode, setMode] = useState<AuthModeType>("signin");
