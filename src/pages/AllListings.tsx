@@ -1,22 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api/api";
 import toast from "react-hot-toast";
-import { CiEdit } from "react-icons/ci";
 import { MdOutlineDelete } from "react-icons/md";
-
-export type ListingType = {
-  _id: string;
-  name: string;
-  address: string;
-  price: number;
-  discountedPrice?: number;
-  bathrooms: number;
-  bedrooms: number;
-  typeOfPlace: "rent" | "sell";
-  offer: boolean;
-  images: string[];
-  createdAt: string;
-};
+import UpdateListingModal from "../components/UpdateListingModal";
+import type { ListingType } from "../utils/types";
 
 const AllListings = () => {
   const [listings, setListings] = useState<ListingType[]>([]);
@@ -156,13 +143,11 @@ const AllListings = () => {
 
                   <td>
                     <div className="flex gap-2">
-                      <button
-                        className="btn btn-ghost btn-xs btn-info"
+                      <UpdateListingModal
+                        listing={listing}
+                        onUpdated={fetchUserListings}
                         disabled={deletingId !== null}
-                      >
-                        Edit
-                        <CiEdit size={20} />
-                      </button>
+                      />
 
                       <button
                         className="btn btn-ghost btn-xs btn-error"
