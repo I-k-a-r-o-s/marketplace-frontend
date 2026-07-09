@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { MdOutlineDelete } from "react-icons/md";
 import UpdateListingModal from "../components/UpdateListingModal";
 import type { ListingType } from "../utils/types";
+import { Link } from "react-router";
 
 const AllListings = () => {
   const [listings, setListings] = useState<ListingType[]>([]);
@@ -98,7 +99,11 @@ const AllListings = () => {
                       </div>
 
                       <div>
-                        <div className="font-semibold">{listing.name}</div>
+                        <div className="font-semibold link link-hover link-secondary ">
+                          <Link to={`/listing/${listing._id}`}>
+                            {listing.name}
+                          </Link>
+                        </div>
 
                         <div className="text-xs opacity-60 capitalize">
                           {listing.typeOfPlace}
