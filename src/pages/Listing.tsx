@@ -3,6 +3,16 @@ import api from "../api/api";
 import { useParams } from "react-router";
 import toast from "react-hot-toast";
 import type { ListingType } from "../utils/types";
+import { LiaMapMarkerAltSolid } from "react-icons/lia";
+import { LuSquareParking, LuSquareParkingOff } from "react-icons/lu";
+import {
+  TbArmchair,
+  TbArmchairOff,
+  TbBath,
+  TbBathOff,
+  TbBed,
+  TbBedOff,
+} from "react-icons/tb";
 
 const Listing = () => {
   const [listing, setListing] = useState<ListingType>();
@@ -15,6 +25,7 @@ const Listing = () => {
   const fetchListing = async () => {
     try {
       setLoading(true);
+      setErrored(false);
       const { data } = await api.get(`/api/listing/${id}`);
       if (data.success) {
         toast.success(data.message);
@@ -36,7 +47,7 @@ const Listing = () => {
 
   useEffect(() => {
     fetchListing();
-  }, []);
+  }, [id]);
 
   const images = listing?.images ?? [];
 
@@ -57,7 +68,7 @@ const Listing = () => {
   }, [listing]);
   return (
     <>
-      {loading || errored ? (
+      {loading ? (
         <div className="hero bg-base-200 min-h-screen">
           <div className="hero-content flex-col w-full max-w-5xl">
             <div className="relative w-full">
@@ -81,6 +92,10 @@ const Listing = () => {
               <div className="skeleton h-12 w-36"></div>
             </div>
           </div>
+        </div>
+      ) : errored ? (
+        <div className="hero min-h-screen">
+          <h1 className="text-4xl font-bold">Listing not found</h1>
         </div>
       ) : (
         <>
@@ -114,9 +129,90 @@ const Listing = () => {
                 )}
               </div>
 
-              <div>
-                <h1 className="text-5xl font-bold">{listing?.name}</h1>
-                <p className="py-6">{listing?.description}</p>
+              <div className="">
+                <h1 className="text-5xl font-bold">
+                  {listing?.name} -{" "}
+                  {listing?.offer ? (
+                    <>
+                      <span className="text-decoration-line: line-through">
+                        ${listing?.price}
+                      </span>
+                      <span> ${listing?.discountedPrice}</span>
+                    </>
+                  ) : (
+                    <span>${listing?.price}</span>
+                  )}
+                  {listing?.typeOfPlace === "rent" ? "/mo" : ""}
+                </h1>
+                <p className="py-6 flex gap-2 item-center">
+                  <LiaMapMarkerAltSolid size={20} />
+                  {listing?.address}
+                </p>
+                <div className="flex gap-4">
+                  <p className="w-full max-w-50 text-center p-1 rounded-md bg-primary">
+                    {listing?.typeOfPlace === "rent" ? "For Rent" : "For Sale"}
+                  </p>
+                  {listing?.offer && listing?.discountedPrice && (
+                    <p className="w-full max-w-50 text-center p-1 rounded-md bg-success">
+                      Save ${listing?.price - listing?.discountedPrice}
+                    </p>
+                  )}
+                </div>
+                <p className="pt-5">
+                  <span className="font-semibold">Description</span>:-{" "}
+                  {listing?.description}
+                </p>
+                <ul className="flex flex-wrap gap-5 pt-2">
+                  <li className="flex gap-2 items-center">
+                    {listing?.bedrooms && listing?.bedrooms > 0 ? (
+                      <>
+                        <TbBed size={20} />
+                        {listing?.bedrooms} Bedrooms
+                      </>
+                    ) : (
+                      <>
+                        <TbBedOff size={20} />
+                        {listing?.bedrooms} Bedroom
+                      </>
+                    )}
+                  </li>
+                  <li className="flex gap-2 items-center">
+                    {listing?.bathrooms && listing?.bathrooms > 0 ? (
+                      <>
+                        <TbBath size={20} />
+                        {listing?.bathrooms} Bathrooms
+                      </>
+                    ) : (
+                      <>
+                        <TbBathOff size={20} />
+                        {listing?.bathrooms} Bathrooms
+                      </>
+                    )}
+                  </li>
+                  <li className="flex gap-2 items-center">
+                    {listing?.furnished ? (
+                      <>
+                        <TbArmchair size={20} /> Furnished
+                      </>
+                    ) : (
+                      <>
+                        <TbArmchairOff size={20} /> Not furnished
+                      </>
+                    )}
+                  </li>
+                  <li className="flex gap-2 items-center">
+                    {listing?.parking ? (
+                      <>
+                        <LuSquareParking size={20} /> Parking Available
+                      </>
+                    ) : (
+                      <>
+                        <LuSquareParkingOff size={20} /> No Parking
+                      </>
+                    )}
+                  </li>
+                </ul>
+                
               </div>
             </div>
           </div>
