@@ -13,12 +13,17 @@ import {
   TbBed,
   TbBedOff,
 } from "react-icons/tb";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import ContactLandlord from "../components/ContactLandlord";
 
 const Listing = () => {
   const [listing, setListing] = useState<ListingType>();
   const [loading, setLoading] = useState(false);
   const [errored, setErrored] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
+
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   const { id } = useParams();
 
@@ -32,6 +37,7 @@ const Listing = () => {
         setListing(data.listing);
       } else {
         toast.error(data.message);
+        setErrored(true);
       }
     } catch (error: any) {
       console.log("Error in fetchListing!:", error);
@@ -129,7 +135,7 @@ const Listing = () => {
                 )}
               </div>
 
-              <div className="">
+              <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
                 <h1 className="text-5xl font-bold">
                   {listing?.name} -{" "}
                   {listing?.offer ? (
@@ -152,7 +158,7 @@ const Listing = () => {
                   <p className="w-full max-w-50 text-center p-1 rounded-md bg-primary">
                     {listing?.typeOfPlace === "rent" ? "For Rent" : "For Sale"}
                   </p>
-                  {listing?.offer && listing?.discountedPrice && (
+                  {listing?.offer && listing.discountedPrice && (
                     <p className="w-full max-w-50 text-center p-1 rounded-md bg-success">
                       Save ${listing?.price - listing?.discountedPrice}
                     </p>
@@ -212,7 +218,11 @@ const Listing = () => {
                     )}
                   </li>
                 </ul>
-                
+                {currentUser &&
+                  listing &&
+                  listing.userRef === currentUser._id && (
+                    <ContactLandlord listing={listing} />
+                  )}
               </div>
             </div>
           </div>
