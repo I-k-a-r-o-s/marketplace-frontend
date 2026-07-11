@@ -9,13 +9,14 @@ export type ListingType = {
   discountedPrice?: number;
   bathrooms: number;
   bedrooms: number;
-  furnished?: boolean;
-  parking?: boolean;
+  furnished: boolean;
+  parking: boolean;
   typeOfPlace: "rent" | "sell";
   offer: boolean;
   images: string[];
-  cloudinaryImagePublicIds?: string[];
+  cloudinaryImagePublicIds: string[];
   createdAt: string;
+  userRef: string;
 };
 
 export type UpdateListingModalProps = {
@@ -38,3 +39,20 @@ export type FormDataType = {
   discountedPrice: number;
   images: File[];
 };
+
+export type ContactProps = {
+  listing: ListingType;
+};
+
+export type UserType = {
+  _id: string;
+  userName: string;
+  email: string;
+};
+
+export interface UserState {
+  currentUser: UserType | null;
+  authLoading: boolean;
+  authChecked: boolean;
+  isUpdating: boolean;
+}
