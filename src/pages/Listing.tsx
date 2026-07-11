@@ -220,7 +220,7 @@ const Listing = () => {
                 </ul>
                 {currentUser &&
                   listing &&
-                  listing.userRef === currentUser._id && (
+                  listing.userRef !== currentUser._id && (
                     <ContactLandlord listing={listing} />
                   )}
               </div>
