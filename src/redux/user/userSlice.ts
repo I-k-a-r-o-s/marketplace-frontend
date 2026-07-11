@@ -1,18 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-
-export type User = {
-  _id: string;
-  userName: string;
-  email: string;
-};
-
-export interface UserState {
-  currentUser: User | null;
-  authLoading: boolean;
-  authChecked: boolean;
-  isUpdating: boolean;
-}
+import type { UserState, UserType } from "../../utils/types";
 
 const initialState: UserState = {
   currentUser: null,
@@ -29,7 +17,7 @@ const userSlice = createSlice({
       state.authLoading = true;
     },
 
-    signInSuccess: (state, action: PayloadAction<User>) => {
+    signInSuccess: (state, action: PayloadAction<UserType>) => {
       state.authLoading = false;
       state.currentUser = action.payload;
     },
@@ -60,7 +48,7 @@ const userSlice = createSlice({
       state.isUpdating = true;
     },
 
-    updateUserSuccess: (state, action: PayloadAction<User>) => {
+    updateUserSuccess: (state, action: PayloadAction<UserType>) => {
       state.isUpdating = false;
       state.currentUser = action.payload;
     },
