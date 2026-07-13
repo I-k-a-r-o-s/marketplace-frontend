@@ -1,6 +1,6 @@
 import { CiMenuFries } from "react-icons/ci";
 import { LuSearch } from "react-icons/lu";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import AuthModal from "./AuthModal";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
@@ -13,10 +13,14 @@ import {
   signOutSuccess,
 } from "../redux/user/userSlice";
 import { IoMdAdd } from "react-icons/io";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const dispatch = useDispatch<AppDispatch>();
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
   const handleSignOut = async () => {
     try {
@@ -38,6 +42,28 @@ const Navbar = () => {
       dispatch(signOutFailure());
     }
   };
+
+  const handleSearch = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set("searchTerm", searchTerm);
+
+      const searchQuery = urlParams.toString();
+      navigate(`/search?${searchQuery}`);
+    } catch (error: any) {
+      console.error("Error in handleSearch:", error);
+      toast.error(error.response?.data?.message || "Internal Server Error!");
+    }
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
   return (
     <div className="navbar bg-base-200 shadow-sm">
       <div className="navbar-start">
@@ -66,10 +92,17 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="navbar-center">
-        <form>
+        <form onSubmit={handleSearch}>
           <label className="input w-auto">
-            <input type="search" required placeholder="Search" />
-            <LuSearch size={20} className="cursor-pointer" />
+            <input
+              type="search"
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button type="submit">
+              <LuSearch size={20} className="cursor-pointer" />
+            </button>
           </label>
         </form>
       </div>
