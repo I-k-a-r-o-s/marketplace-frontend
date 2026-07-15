@@ -56,3 +56,13 @@ export interface UserState {
   authChecked: boolean;
   isUpdating: boolean;
 }
+
+export type RefinedSearchType = {
+  searchTerm: string;
+  typeOfPlace: string;
+  parking: boolean;
+  furnished: boolean;
+  offer: boolean;
+  sort: string;
+  order: string;
+};
