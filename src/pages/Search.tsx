@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router";
 import api from "../api/api";
 import SearchSidebar from "../components/SearchSidebar";
-import type { RefinedSearchType } from "../utils/types";
+import { type ListingType, type RefinedSearchType } from "../utils/types";
+import ListingCard from "../components/ListingCard";
 
 const Search = () => {
   const [refinedSearch, setRefinedSearch] = useState<RefinedSearchType>({
@@ -15,7 +16,7 @@ const Search = () => {
     sort: "createdAt",
     order: "desc",
   });
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState<ListingType[]>([]);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -124,7 +125,6 @@ const Search = () => {
         setLoading(true);
 
         const { data } = await api.get(`/api/listing${location.search}`);
-
         setListings(data.foundListings);
         toast.success(data.message);
       } catch (error: any) {
@@ -140,24 +140,38 @@ const Search = () => {
 
     findListings();
   }, [location.search]);
-  console.log(listings);
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col items-center justify-center">
         {/* Page content*/}
-        <h1 className="text-2xl mt-5">Search Results</h1>
         <label
           htmlFor="my-drawer-3"
           className="btn btn-primary drawer-button my-5 lg:hidden"
         >
           Refine Search
         </label>
-        {loading ? (
-          <p className="mt-4 text-sm text-muted">Searching listings...</p>
-        ) : (
-          "Found"
-        )}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {loading ? (
+            <p className="mt-4 text-2xl">
+              Searching<span className="loading loading-dots loading-sm"></span>
+            </p>
+          ) : listings.length === 0 ? (
+            <>
+              <h1 className="text-2xl mb-5">No Listings Found!</h1>
+              <div className="flex w-52 flex-col gap-4">
+                <div className="skeleton h-32 w-full"></div>
+                <div className="skeleton h-4 w-28"></div>
+                <div className="skeleton h-4 w-full"></div>
+                <div className="skeleton h-4 w-full"></div>
+              </div>
+            </>
+          ) : (
+            listings.map((listing) => (
+              <ListingCard key={listing._id} listing={listing} />
+            ))
+          )}
+        </div>
       </div>
 
       <div className="drawer-side">
