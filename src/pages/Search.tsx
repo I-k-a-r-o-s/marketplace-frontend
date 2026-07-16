@@ -18,9 +18,12 @@ const Search = () => {
   });
   const [listings, setListings] = useState<ListingType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const PAGE_SIZE = 9;
 
   //fill the setRefinedSearch with the values from the URL query parameters when the component mounts or when the location.search changes
   useEffect(() => {
@@ -119,14 +122,40 @@ const Search = () => {
     }
   };
 
+  const handleShowMore = async () => {
+    try {
+      const startIndex = listings.length;
+      const urlParams = new URLSearchParams(location.search);
+
+      urlParams.set("startIndex", startIndex.toString());
+      urlParams.set("limit", PAGE_SIZE.toString());
+
+      const { data } = await api.get(`/api/listing?${urlParams.toString()}`);      
+      setListings((prev) => [...prev, ...data.foundListings]);
+      setShowMore(data.hasMore)
+    } catch (error: any) {
+      console.error("Error in handleShowMore:", error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred while loading more listings!",
+      );
+    }
+  };
+
   useEffect(() => {
     const findListings = async () => {
       try {
         setLoading(true);
 
-        const { data } = await api.get(`/api/listing${location.search}`);
+        const urlParams = new URLSearchParams(location.search);
+
+        urlParams.set("limit", PAGE_SIZE.toString());
+        urlParams.set("startIndex", "0");
+
+        const { data } = await api.get(`/api/listing?${urlParams.toString()}`);
         setListings(data.foundListings);
-        toast.success(data.message);
+        setShowMore(data.hasMore);
       } catch (error: any) {
         console.log("Error in findListings!:", error);
         toast.error(
@@ -167,13 +196,23 @@ const Search = () => {
               </div>
             </>
           ) : (
-            listings.map((listing) => (
-              <ListingCard key={listing._id} listing={listing} />
-            ))
+            <>
+              {listings.map((listing) => (
+                <ListingCard key={listing._id} listing={listing} />
+              ))}
+            </>
           )}
         </div>
-      </div>
 
+        {showMore && (
+          <button
+            className="link link-success link-hover mt-5"
+            onClick={handleShowMore}
+          >
+            Show More
+          </button>
+        )}
+      </div>
       <div className="drawer-side">
         <label
           htmlFor="my-drawer-3"
