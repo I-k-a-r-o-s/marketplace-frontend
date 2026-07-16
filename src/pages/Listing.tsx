@@ -148,7 +148,7 @@ const Listing = () => {
                   ) : (
                     <span>${listing?.price}</span>
                   )}
-                  {listing?.typeOfPlace === "rent" ? "/mo" : ""}
+                  {listing?.typeOfPlace === "rent" && "/mo"}
                 </h1>
                 <p className="py-6 flex gap-2 item-center">
                   <LiaMapMarkerAltSolid size={20} />
