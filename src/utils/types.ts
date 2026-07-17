@@ -14,7 +14,7 @@ export type ListingType = {
   typeOfPlace: "rent" | "sell";
   offer: boolean;
   images: string[];
-  cloudinaryImagePublicIds: string[];
+  cloudinaryImagePublicIds?: string[];
   createdAt: string;
   userRef: string;
 };
