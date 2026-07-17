@@ -9,10 +9,7 @@ type ListingCardProps = {
 
 const ListingCard = ({ listing }: ListingCardProps) => {
   return (
-    <Link
-      to={`/listing/${listing._id}`}
-      className="hover-3d block cursor-pointer"
-    >
+    <Link to={`/listing/${listing._id}`} className="hover-3d  cursor-pointer">
       {/* content */}
       <div className="card h-full bg-base-300 shadow-sm">
         <figure>
