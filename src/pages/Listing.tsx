@@ -43,7 +43,7 @@ const Listing = () => {
       console.log("Error in fetchListing!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while fetching the listing!",
+          "Internal Server Error!",
       );
       setErrored(true);
     } finally {

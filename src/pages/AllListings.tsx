@@ -28,7 +28,7 @@ const AllListings = () => {
       console.log("Error in fetchUserListings!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while fetching listings!",
+          "Internal Server Error!",
       );
     }
   };
@@ -52,7 +52,7 @@ const AllListings = () => {
       console.log("Error in handleDeleteListing!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while deleting listing!",
+          "Internal Server Error!",
       );
     } finally {
       setDeletingId(null);

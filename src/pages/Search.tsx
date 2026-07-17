@@ -117,7 +117,7 @@ const Search = () => {
     } catch (error: any) {
       console.log("Error in handleSearch!:", error);
       toast.error(
-        error?.response?.data?.message || "An error occurred while searching!",
+        error?.response?.data?.message || "Internal Server Error!",
       );
     }
   };
@@ -138,7 +138,7 @@ const Search = () => {
 
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while loading more listings!",
+          "Internal Server Error!",
       );
     }
   };
@@ -160,7 +160,7 @@ const Search = () => {
         console.log("Error in findListings!:", error);
         toast.error(
           error?.response?.data?.message ||
-            "An error occurred while searching!",
+            "Internal Server Error!",
         );
       } finally {
         setLoading(false);
@@ -171,6 +171,7 @@ const Search = () => {
   }, [location.search]);
   return (
     <div className="drawer lg:drawer-open">
+      <title>Search</title>
       <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
       <div className="drawer-content flex flex-col items-center justify-center">
         {/* Page content*/}

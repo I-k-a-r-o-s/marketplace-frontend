@@ -49,7 +49,7 @@ const Profile = () => {
       console.log("Error in handleUpdateInfo!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while updating user info!",
+          "Internal Server Error!",
       );
       dispatch(updateUserFailed());
     }
@@ -73,7 +73,7 @@ const Profile = () => {
       console.log("Error in handleDeleteUser!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while deleting user!.",
+          "Internal Server Error!.",
       );
       dispatch(deleteUserFailed());
     } finally {

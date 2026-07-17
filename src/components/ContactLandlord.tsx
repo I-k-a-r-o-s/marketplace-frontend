@@ -18,7 +18,7 @@ const ContactLandlord = ({ listing }: ContactProps) => {
       console.log("Error in fetchLandlord!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while fetching landlord!",
+          "Internal Server Error!",
       );
     }
   };

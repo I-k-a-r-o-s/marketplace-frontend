@@ -37,7 +37,7 @@ const Navbar = () => {
       console.log("Error in handleSignOut!:", error);
       toast.error(
         error?.response?.data?.message ||
-          "An error occurred while signing out!",
+          "Internal Server Error!",
       );
       dispatch(signOutFailure());
     }
