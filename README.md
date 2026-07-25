@@ -1,73 +1,143 @@
-# React + TypeScript + Vite
+# Marketplace Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive real estate marketplace built with **React**, **TypeScript**, **Vite**, and **TailwindCSS**. The application allows users to browse, search, and manage property listings through a modern, intuitive interface.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- User authentication
+- Secure JWT cookie authentication
+- Property search and filtering
+- View detailed property information
+- Create, edit, and delete listings
+- User profile management
+- Responsive design
+- Toast notifications
+- Loading skeletons
+- Protected routes
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠 Tech Stack
 
-## Expanding the ESLint configuration
+- React 19
+- TypeScript
+- Vite
+- React Router
+- Redux Toolkit
+- Axios
+- TailwindCSS
+- DaisyUI
+- React Hot Toast
+- React Icons
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Folder Structure
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── api/
+├── assets/
+├── components/
+├── pages/
+├── store/
+├── utils/
+├── App.tsx
+└── main.tsx
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Before running this project, make sure you have installed:
+
+- Node.js 20+
+- npm
+
+---
+
+## Installation
+
+### Clone the repository
+
+```bash
+git clone <repository-url>
 ```
+
+Navigate into the frontend directory.
+
+```bash
+cd frontend
+```
+
+Install dependencies.
+
+```bash
+npm install
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+VITE_BASE_URL=(eg:-http://localhost:3000)
+```
+
+Replace the URL with your deployed backend when running in production.
+
+---
+
+## Running the Project
+
+Development server
+
+```bash
+npm run dev
+```
+
+The application will be available at:
+
+```
+http://localhost:5173
+```
+
+---
+
+## Production Build
+
+Create an optimized production build.
+
+```bash
+npm run build
+```
+
+Preview the production build locally.
+
+```bash
+npm run preview
+```
+
+---
+
+## Available Scripts
+
+| Command | Description |
+|----------|-------------|
+| npm run dev | Start development server |
+| npm run build | Build production version |
+| npm run preview | Preview production build |
+| npm run lint | Run ESLint |
+
+---
+
+## Backend
+
+This frontend requires the Marketplace Backend API.
+
+Make sure the backend server is running before starting the frontend.
+
+---
